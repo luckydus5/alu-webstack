@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Script that displays information about subdomains using dig and awk
+
+domain_info () {
+    local domain="$1"
+    local subdomain="$2"
+    dig "$subdomain.$domain" | grep -A1 'ANSWER SECTION:' | tail -1 | awk -v sub="$subdomain" '{print "The subdomain " sub " is a " $4 " record and points to " $5}'
+}
+
+if [ -z "$2" ]; then
+    domain_info $1 www
+    domain_info $1 lb-01
+    domain_info $1 web-01
+    domain_info $1 web-02
+else
+    domain_info $1 $2
+fi
